@@ -127,8 +127,7 @@ public class Main {
         }
 
         if(existe) {
-            var contatoDao = new ContatoDao();
-            System.out.println(contatoDao.buscarPorNome(nome));
+            System.out.println(ContatoDao.buscarPorNome(nome));            
         } else {
             System.out.println("Contato inexistente.");
         }
