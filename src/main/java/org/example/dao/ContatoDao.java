@@ -105,5 +105,58 @@ public class ContatoDao {
             return lista;
      
     }
- 
+
+    public static List<Contato> percorrerArray(ArrayList<Integer> listaIds) {
+        String command = """
+                SELECT id, nome, numero FROM contatos
+                WHERE id = ?;
+                """;
+
+        List<Contato> lista = new ArrayList<>();
+
+        try(Connection conn = ConnectionFactory.conectar();
+            PreparedStatement stmt = conn.prepareStatement(command)){
+
+                for(Contato contato : listar()) {
+                    for(Integer id : listaIds) {
+                        if(contato.getId() == id) {
+                            stmt.setInt(1, id);
+
+                            ResultSet rs = stmt.executeQuery();
+
+                            while(rs.next()) {
+                                Contato contatos = new Contato();
+                                contatos.setId(rs.getInt("id"));
+                                contatos.setNome(rs.getString("nome"));
+                                contatos.setNumero(rs.getString("numero"));
+                                lista.add(contatos);
+                            }
+                        }
+                    }
+                }
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+
+            return lista;
+    }
+
+    public static void deletar(int id) throws SQLException{
+        String command = """
+                    DELETE from contatos
+                    WHERE id = ?
+                    """;
+
+        try(Connection conn = ConnectionFactory.conectar();
+            PreparedStatement stmt = conn.prepareStatement(command)){
+
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+
+                System.out.println("Contato deletado com sucesso!");
+
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+    }
 }

@@ -42,7 +42,13 @@ public class Contato {
 
     @Override
     public String toString() {
-        return "Contato [id=" + id + ", nome=" + nome + ", numero=" + numero + "]";
+
+        return  "\n======================\n" + 
+                "Contato:\n" + 
+                "id =" + id + 
+                "\nnome = " + nome + 
+                "\nnumero = " + numero;  
+                
     }  
 
     

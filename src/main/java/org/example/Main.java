@@ -21,6 +21,13 @@ public class Main {
     }
 
     public static void inicio(){
+
+        int opcao;
+
+        try {
+        
+        do {
+
         System.out.print("""
                 ---Lista de Contatos---
                 1 - Cadastrar contato
@@ -28,9 +35,10 @@ public class Main {
                 3 - Listar
                 4 - Buscar por nome
                 5 - Função que recebe array de ids e retorna uma lista como os contatos dos ids em contatos
-                Escolha uma opção:
-                """);
-        int opcao = SC.nextInt();
+                6 - Deletar
+                0 - Sair
+                Escolha uma opção: """);
+        opcao = SC.nextInt();
         SC.nextLine();
 
         switch(opcao){
@@ -53,7 +61,31 @@ public class Main {
                 buscarPorNome();
                 break;
             }
+
+            case 5: {
+                percorrerLista();
+                break;
+            }
+
+            case 6: {
+                deletarContato();
+                break;
+            }
+
+            case 0: {
+                System.out.println("Saindo...");
+                break;
+            }
+
+            default: {
+                System.out.println("Opção inválida.");
+            }
         }
+        } while(opcao != 0);
+
+    } catch(Exception e) {
+        System.out.println("Erro: digite apenas números");
+    }
     }
 
     public static void cadastrarContato(){
@@ -120,16 +152,45 @@ public class Main {
         boolean existe = false;
 
         System.out.print("Digite um nome para buscar: ");
-        String nome = SC.nextLine();
+        String nome = SC.nextLine().toLowerCase();
 
         for(Contato contato : ContatoDao.listar()) {
-            if(contato.getNome().contains(nome)) existe = true;
+            if(contato.getNome().toLowerCase().contains(nome)) existe = true;
         }
 
         if(existe) {
             System.out.println(ContatoDao.buscarPorNome(nome));            
         } else {
             System.out.println("Contato inexistente.");
+        }
+    }
+
+    public static void percorrerLista() {
+
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        while(true) {
+            System.out.println("Digite um id para adicionar no Array: (0 para parar)");
+            int id = SC.nextInt();
+            ids.add(id);
+
+            if(id == 0) { break; }
+        }
+
+        System.out.println(ContatoDao.percorrerArray(ids));
+        if(ContatoDao.percorrerArray(ids).isEmpty()) {
+            System.out.println("Ids não encontrados!");
+        }
+    }
+
+    public static void deletarContato() {
+        System.out.print("Digite o id do contato para deletar: ");
+        int id = SC.nextInt();
+
+        try {
+        ContatoDao.deletar(id);
+        } catch(SQLException e) {
+            e.printStackTrace();
         }
     }
 }
