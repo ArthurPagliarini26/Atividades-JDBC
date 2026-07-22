@@ -24,10 +24,11 @@ public class Main {
 
         int opcao;
 
-        try {
+        
         
         do {
 
+            try {
         System.out.print("""
                 ---Lista de Contatos---
                 1 - Cadastrar contato
@@ -40,6 +41,12 @@ public class Main {
                 Escolha uma opção: """);
         opcao = SC.nextInt();
         SC.nextLine();
+
+         } catch(Exception e) {
+                System.out.println("Erro: digite apenas números");
+                SC.nextLine();
+                opcao = -1;
+        }
 
         switch(opcao){
             case 1: {
@@ -82,10 +89,6 @@ public class Main {
             }
         }
         } while(opcao != 0);
-
-    } catch(Exception e) {
-        System.out.println("Erro: digite apenas números");
-    }
     }
 
     public static void cadastrarContato(){
