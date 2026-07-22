@@ -23,14 +23,12 @@ public class Main {
     public static void inicio(){
 
         int opcao;
-
-        
         
         do {
 
             try {
         System.out.print("""
-                ---Lista de Contatos---
+                \n---Lista de Contatos---
                 1 - Cadastrar contato
                 2 - Editar
                 3 - Listar
@@ -39,14 +37,14 @@ public class Main {
                 6 - Deletar
                 0 - Sair
                 Escolha uma opção: """);
-        opcao = SC.nextInt();
-        SC.nextLine();
-
-         } catch(Exception e) {
-                System.out.println("Erro: digite apenas números");
+                opcao = SC.nextInt();
                 SC.nextLine();
-                opcao = -1;
-        }
+
+                } catch(Exception e) {
+                    System.out.println("Erro: digite apenas números");
+                    SC.nextLine();
+                    opcao = -1;
+                }
 
         switch(opcao){
             case 1: {
@@ -116,12 +114,14 @@ public class Main {
         System.out.println("Digite o id do contato para editar:");
         int id = SC.nextInt();
         SC.nextLine();
-
-
+        
+        try {
         for(Contato contato : ContatoDao.listar()) {
             if(contato.getId() == id) existe = true;
         }
-        
+        } catch(SQLException e) {
+            e.printStackTrace();
+        } 
 
         if(existe) {
 
@@ -131,10 +131,8 @@ public class Main {
             System.out.println("Digite o novo número do contato:");
             String novoNumero = SC.nextLine();
 
-            var contatoDao = new ContatoDao();
-
             try {
-                contatoDao.editar(id, novoNome, novoNumero);
+                ContatoDao.editar(id, novoNome, novoNumero);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -144,9 +142,23 @@ public class Main {
         }
     }
 
+    
     public static void listarContato(){
-        for(Contato contato : ContatoDao.listar()) {
-            System.out.println(contato);
+        var ContatoDao = new ContatoDao();
+        List<Contato> contatos = new ArrayList<>();
+
+        try {
+            contatos = ContatoDao.listar();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        for(Contato contato : contatos) {
+            System.out.println("====================");
+            System.out.println("Contato:");
+            System.out.println("ID: " + contato.getId());
+            System.out.println("NOME: " + contato.getNome());
+            System.out.println("NÚMERO: " + contato.getNumero());
         }
     }
 
@@ -157,12 +169,23 @@ public class Main {
         System.out.print("Digite um nome para buscar: ");
         String nome = SC.nextLine().toLowerCase();
 
+        try {
+            
         for(Contato contato : ContatoDao.listar()) {
             if(contato.getNome().toLowerCase().contains(nome)) existe = true;
         }
 
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
         if(existe) {
-            System.out.println(ContatoDao.buscarPorNome(nome));            
+            try {
+            System.out.println(ContatoDao.buscarPorNome(nome));    
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }        
+
         } else {
             System.out.println("Contato inexistente.");
         }

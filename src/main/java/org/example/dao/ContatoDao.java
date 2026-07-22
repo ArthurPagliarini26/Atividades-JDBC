@@ -31,7 +31,7 @@ public class ContatoDao {
 
     }
 
-    public void editar(int id, String novoNome, String novoTelefone) throws SQLException{
+    public static void editar(int id, String novoNome, String novoTelefone) throws SQLException{
         String command = """
                     UPDATE contatos 
                     SET nome = ?, 
@@ -49,16 +49,16 @@ public class ContatoDao {
 
                 System.out.println("Contato atualizado com sucesso!");
 
-            } catch(SQLException e) {
-                e.printStackTrace();
             }
     }
 
-    public static List<Contato> listar() {
-    String command = "SELECT id,nome,numero FROM contatos";
+    public static List<Contato> listar() throws SQLException{
+
+    String query = "SELECT id,nome,numero FROM contatos";
     List<Contato> contatos = new ArrayList<>();
+
     try (Connection conn = ConnectionFactory.conectar();
-         PreparedStatement stmt = conn.prepareStatement(command)) {
+         PreparedStatement stmt = conn.prepareStatement(query)) {
 
         ResultSet rs = stmt.executeQuery();
 
@@ -70,15 +70,15 @@ public class ContatoDao {
             Contato contato = new Contato(id, nome, numero);
             contatos.add(contato);
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
+    } 
+
     return contatos;
 }
 
-    public static List<Contato> buscarPorNome(String nome) {
+    public static List<Contato> buscarPorNome(String nome) throws SQLException{
         String command = """
-                SELECT id, nome, numero FROM contatos 
+                SELECT id, nome, numero 
+                FROM contatos 
                 WHERE nome LIKE ?
                 """;
 
